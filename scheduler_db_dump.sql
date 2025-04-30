@@ -1,7 +1,7 @@
-DROP DATABASE IF EXISTS simple_scheduler;
-CREATE DATABASE simple_scheduler;
+DROP DATABASE IF EXISTS scheduler_db;
+CREATE DATABASE scheduler_db;
 
-\connect simple_scheduler
+\connect scheduler_db
 
 CREATE TABLE classes (
     id SERIAL PRIMARY KEY,
