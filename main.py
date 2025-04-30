@@ -3,9 +3,8 @@ from psycopg2 import sql
 import datetime
 import random
 
-# Database connection details
 DB_NAME = "scheduler_db"
-DB_USER = "arturtorosyan"  # <-- change if needed
+DB_USER = "arturtorosyan" 
 DB_PASSWORD = ""
 DB_HOST = "localhost"
 DB_PORT = "5432"
@@ -19,16 +18,16 @@ def connect_db():
             host=DB_HOST,
             port=DB_PORT
         )
-        print("✅ Database connection established.")
+        print(" Database connection established.")
         return conn
     except Exception as e:
-        print(f"❌ Connection failed: {e}")
+        print(f" Connection failed: {e}")
         return None
 
 def close_db(conn):
     if conn:
         conn.close()
-        print("🔒 Database connection closed.")
+        print(" Database connection closed.")
 
 # Insert functions
 def insert_course(conn, name, description):
@@ -41,11 +40,11 @@ def insert_course(conn, name, description):
             """, (name, description))
             course_id = cur.fetchone()[0]
             conn.commit()
-            print(f"📚 Course '{name}' inserted with ID {course_id}.")
+            print(f" Course '{name}' inserted with ID {course_id}.")
             return course_id
     except Exception as e:
         conn.rollback()
-        print(f"❌ Insert course failed: {e}")
+        print(f" Insert course failed: {e}")
 
 def insert_classroom(conn, name):
     try:
@@ -57,11 +56,11 @@ def insert_classroom(conn, name):
             """, (name,))
             classroom_id = cur.fetchone()[0]
             conn.commit()
-            print(f"🏫 Classroom '{name}' inserted with ID {classroom_id}.")
+            print(f" Classroom '{name}' inserted with ID {classroom_id}.")
             return classroom_id
     except Exception as e:
         conn.rollback()
-        print(f"❌ Insert classroom failed: {e}")
+        print(f" Insert classroom failed: {e}")
 
 def insert_period(conn, name, start_time, end_time):
     try:
@@ -73,11 +72,11 @@ def insert_period(conn, name, start_time, end_time):
             """, (name, start_time, end_time))
             period_id = cur.fetchone()[0]
             conn.commit()
-            print(f"🕒 Period '{name}' inserted with ID {period_id}.")
+            print(f" Period '{name}' inserted with ID {period_id}.")
             return period_id
     except Exception as e:
         conn.rollback()
-        print(f"❌ Insert period failed: {e}")
+        print(f" Insert period failed: {e}")
 
 def allocate_classroom(conn, course_id, classroom_id, period_id):
     try:
@@ -87,15 +86,14 @@ def allocate_classroom(conn, course_id, classroom_id, period_id):
                 VALUES (%s, %s, %s);
             """, (course_id, classroom_id, period_id))
             conn.commit()
-            print(f"✅ Allocation: Course {course_id} to Classroom {classroom_id} during Period {period_id}.")
+            print(f" Allocation: Course {course_id} to Classroom {classroom_id} during Period {period_id}.")
     except psycopg2.errors.UniqueViolation:
         conn.rollback()
-        print(f"⚠️ Allocation failed: Course {course_id} already assigned to Period {period_id}!")
+        print(f"⚠ Allocation failed: Course {course_id} already assigned to Period {period_id}!")
     except Exception as e:
         conn.rollback()
-        print(f"❌ Allocation failed: {e}")
+        print(f" Allocation failed: {e}")
 
-# Update functions
 def update_course(conn, course_id, new_name, new_description):
     try:
         with conn.cursor() as cur:
@@ -105,10 +103,10 @@ def update_course(conn, course_id, new_name, new_description):
                 WHERE id = %s;
             """, (new_name, new_description, course_id))
             conn.commit()
-            print(f"✏️ Updated course ID {course_id}.")
+            print(f"✏ Updated course ID {course_id}.")
     except Exception as e:
         conn.rollback()
-        print(f"❌ Update course failed: {e}")
+        print(f" Update course failed: {e}")
 
 def update_classroom(conn, classroom_id, new_name):
     try:
@@ -119,12 +117,11 @@ def update_classroom(conn, classroom_id, new_name):
                 WHERE id = %s;
             """, (new_name, classroom_id))
             conn.commit()
-            print(f"✏️ Updated classroom ID {classroom_id}.")
+            print(f"✏ Updated classroom ID {classroom_id}.")
     except Exception as e:
         conn.rollback()
-        print(f"❌ Update classroom failed: {e}")
+        print(f" Update classroom failed: {e}")
 
-# Delete functions
 def delete_course(conn, course_id):
     try:
         with conn.cursor() as cur:
@@ -133,10 +130,10 @@ def delete_course(conn, course_id):
                 WHERE id = %s;
             """, (course_id,))
             conn.commit()
-            print(f"🗑️ Deleted course ID {course_id}.")
+            print(f" Deleted course ID {course_id}.")
     except Exception as e:
         conn.rollback()
-        print(f"❌ Delete course failed: {e}")
+        print(f" Delete course failed: {e}")
 
 def delete_classroom(conn, classroom_id):
     try:
@@ -146,17 +143,16 @@ def delete_classroom(conn, classroom_id):
                 WHERE id = %s;
             """, (classroom_id,))
             conn.commit()
-            print(f"🗑️ Deleted classroom ID {classroom_id}.")
+            print(f" Deleted classroom ID {classroom_id}.")
     except Exception as e:
         conn.rollback()
-        print(f"❌ Delete classroom failed: {e}")
+        print(f" Delete classroom failed: {e}")
 
-# Viewing Functions
 def list_courses(conn):
     with conn.cursor() as cur:
         cur.execute("SELECT id, name, description FROM courses;")
         rows = cur.fetchall()
-        print("\n📚 Courses:")
+        print("\n Courses:")
         for row in rows:
             print(f"ID {row[0]}: {row[1]} - {row[2]}")
 
@@ -164,7 +160,7 @@ def list_classrooms(conn):
     with conn.cursor() as cur:
         cur.execute("SELECT id, name FROM classrooms;")
         rows = cur.fetchall()
-        print("\n🏫 Classrooms:")
+        print("\n Classrooms:")
         for row in rows:
             print(f"ID {row[0]}: {row[1]}")
 
@@ -172,7 +168,7 @@ def list_periods(conn):
     with conn.cursor() as cur:
         cur.execute("SELECT id, name, start_time, end_time FROM periods;")
         rows = cur.fetchall()
-        print("\n🕒 Periods:")
+        print("\n Periods:")
         for row in rows:
             print(f"ID {row[0]}: {row[1]} ({row[2]} - {row[3]})")
 
@@ -187,11 +183,10 @@ def list_allocations(conn):
             ORDER BY p.start_time;
         """)
         rows = cur.fetchall()
-        print("\n📅 Allocations:")
+        print("\n Allocations:")
         for row in rows:
             print(f"{row[0]} → {row[1]} during {row[2]} ({row[3]} - {row[4]})")
 
-# Helper random functions
 def random_course():
     names = ["Math", "Physics", "Chemistry", "History", "Biology", "Art", "Music", "PE"]
     name = random.choice(names) + f" {random.randint(100, 499)}"
@@ -217,12 +212,11 @@ def reset_database(conn):
             cur.execute("DELETE FROM classrooms;")
             cur.execute("DELETE FROM periods;")
             conn.commit()
-            print("🧹 Database reset.")
+            print(" Database reset.")
     except Exception as e:
         conn.rollback()
-        print(f"❌ Reset failed: {e}")
+        print(f" Reset failed: {e}")
 
-# Populate database with sample data
 def populate_database(conn):
     courses = []
     classrooms = []
